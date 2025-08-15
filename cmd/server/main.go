@@ -17,7 +17,9 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", api.GetHealthOfAPI)
-	mux.HandleFunc("GET /api/convert", api.GetExchangeRate)
+	mux.HandleFunc("GET /api/latest", api.GetLatestExchangeRate)
+	mux.HandleFunc("GET /api/exchange", api.GetConvertedExchangeRate)
+	mux.HandleFunc("GET /api/convert", api.GetHistoricalExchangeRate)
 
 	server :=&http.Server{
 		Addr: ":8080",
