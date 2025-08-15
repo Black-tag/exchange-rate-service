@@ -10,6 +10,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"log/slog"
 	"net/http"
@@ -130,10 +131,36 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	from := queryParams.Get("from")
 	to := queryParams.Get("to")
 	date := queryParams.Get("date")
+	if date == "" {
+		fmt.Println("missing date and calling latest")
+		GetLatestExchangeRate(w, r)
+		return
+		
+	}
 
 	logger = logger.With("from", from)
 	logger = logger.With("to", to)
 	logger = logger.With("date", date)
+
+	currentDate := time.Now().Truncate(24 * time.Hour)
+
+	givenDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		log.Fatalf("error parsing given date: %v", err)
+
+	}
+
+	ninetydaysBeforeNow := currentDate.AddDate(0,0,-90)
+	fmt.Println(ninetydaysBeforeNow)
+
+	if currentDate.Sub(givenDate) > 90 * 24 * time.Hour {
+		http.Error(w, "given date is more than 90 days in past", http.StatusBadRequest)
+		return
+
+	}
+	
+	
+
 	rate , err := repository.FetchHistoricalData(date)
 	if err != nil {
 		logger.Error("cannot call external api")
@@ -154,6 +181,12 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Error("cannot decode json", "error", err)
 	}
+	From := strings.ToUpper(from)
+	To := strings.ToUpper(to)
+	
+	fmt.Print(data.Quotes)
+	amount := services.ConvertCurrency(From, To, data.Quotes)
+	fmt.Println("amount", amount)
 	
 	w.Header().Set("Content-Type", "application/json")
 
