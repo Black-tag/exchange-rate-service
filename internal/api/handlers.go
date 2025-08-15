@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"exchange-rate-service/internal/middleware"
 	"exchange-rate-service/internal/model"
 	"exchange-rate-service/internal/repository"
 	"exchange-rate-service/internal/services"
@@ -41,6 +42,20 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "exchange currency not supprted", http.StatusBadRequest)
 		return
 	}
+	From := strings.ToUpper(from)
+	To := strings.ToUpper(to)
+
+
+	cacheKey := "rate_"+From+"_"+To
+	fmt.Print(cacheKey)
+
+	cachedRates, err := middleware.GetCachedRates(cacheKey)
+	if err == nil {
+		fmt.Println("amount from cache")
+		amount := services.ConvertCurrency(from, to, cachedRates)
+		json.NewEncoder(w).Encode(map[string]float64{"rate":amount})
+		return
+	}
 	
 	rate, err := repository.FetchRates()
 	if err != nil {
@@ -55,7 +70,7 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	logger = logger.With("function response", body)
-	fmt.Println("rates", string(body))
+	// fmt.Println("rates", string(body))
 
 	var data model.RateResponse
 	err = json.Unmarshal(body, &data)
@@ -63,10 +78,10 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("error  parsing json")
 		logger.Error("cannot decode json", "error", err)
 	}
-	From := strings.ToUpper(from)
-	To := strings.ToUpper(to)
+	middleware.CacheExchangerates(cacheKey, data.Quotes)
 	
-	fmt.Print(data.Quotes)
+	
+	// fmt.Print(data.Quotes)
 	amount := services.ConvertCurrency(From, To, data.Quotes)
 	fmt.Println("amount", amount)
 	
@@ -115,7 +130,7 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	logger = logger.With("function response", body)
-	fmt.Println("rates", string(body))
+	// fmt.Println("rates", string(body))
 
 	var data model.RateResponse
 	err = json.Unmarshal(body, &data)
@@ -190,7 +205,7 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	logger = logger.With("function response", body)
-	fmt.Println("rates", string(body))
+	// fmt.Println("rates", string(body))
 
 	var data model.RateResponse
 	err = json.Unmarshal(body, &data)
@@ -200,7 +215,7 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	From := strings.ToUpper(from)
 	To := strings.ToUpper(to)
 	
-	fmt.Print(data.Quotes)
+	// fmt.Print(data.Quotes)
 	amount := services.ConvertCurrency(From, To, data.Quotes)
 	fmt.Println("amount", amount)
 	
