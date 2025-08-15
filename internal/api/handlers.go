@@ -36,6 +36,11 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	from := queryParams.Get("from")
 	to := queryParams.Get("to")
+	ok := services.IsAllowed(strings.ToUpper(from), strings.ToUpper(to))
+	if !ok {
+		http.Error(w, "exchange currency not supprted", http.StatusBadRequest)
+		return
+	}
 	
 	rate, err := repository.FetchRates()
 	if err != nil {
@@ -84,6 +89,11 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	from := queryParams.Get("from")
 	to := queryParams.Get("to")
+	ok := services.IsAllowed(strings.ToUpper(from), strings.ToUpper(to))
+	if !ok {
+		http.Error(w, "exchange currency not supprted", http.StatusBadRequest)
+		return
+	}
 	amountStr := queryParams.Get("amount")
 	amount, err := strconv.Atoi(amountStr)
 	if err != nil {
@@ -142,7 +152,7 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	logger = logger.With("to", to)
 	logger = logger.With("date", date)
 
-	ok := services.IsAllowed(from)
+	ok := services.IsAllowed(strings.ToUpper(from), strings.ToUpper(to))
 	if !ok {
 		http.Error(w, "exchange currency not supprted", http.StatusBadRequest)
 		return
