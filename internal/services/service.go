@@ -48,8 +48,14 @@ func ConvertCurrency(From, To string, exchange map[string]float64 ) (amount floa
 }	
 
 
-// 		if convertFrom == 0 {
-//     		return 0
-// 		}
-// 		exhangeRate := convertTo / convertFrom
-// 		return exhangeRate
+func IsAllowed(givenCurrency string, ) (bool) {
+	allowedCurrencies := []string{"USD", "INR", "EUR", "JPY", "GBP"}
+
+	for _, v := range allowedCurrencies {
+		if v == givenCurrency {
+			return true
+
+		}
+	}
+	return false
+}

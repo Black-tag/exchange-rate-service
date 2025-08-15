@@ -142,6 +142,12 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	logger = logger.With("to", to)
 	logger = logger.With("date", date)
 
+	ok := services.IsAllowed(from)
+	if !ok {
+		http.Error(w, "exchange currency not supprted", http.StatusBadRequest)
+		return
+	}
+
 	currentDate := time.Now().Truncate(24 * time.Hour)
 
 	givenDate, err := time.Parse("2006-01-02", date)
