@@ -6,9 +6,11 @@ import (
 	"exchange-rate-service/internal/model"
 	"exchange-rate-service/internal/repository"
 	"exchange-rate-service/internal/services"
+	"exchange-rate-service/internal/metrics"
 	"fmt"
 	"io"
 	"log"
+	
 	"strconv"
 	"strings"
 	"time"
@@ -28,6 +30,7 @@ func GetHealthOfAPI(w http.ResponseWriter, r *http.Request) {
 
 
 func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
+	metrics.TotalApiRequests.WithLabelValues(r.URL.Path, r.Method, "200").Inc()
 	logger := slog.Default().With(
 		"handler", "GetEchangeRate",
 		"Method", r.Method,
@@ -94,6 +97,7 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 
 
 func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
+	metrics.TotalApiRequests.WithLabelValues(r.URL.Path, r.Method, "200").Inc()
 	logger := slog.Default().With(
 		"handler", "GetHistoricalExchangeRate",
 		"method", r.Method,
@@ -144,6 +148,7 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 
 
 func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
+	metrics.TotalApiRequests.WithLabelValues(r.URL.Path, r.Method, "200").Inc()
 	logger := slog.Default().With(
 		"handler", "GetHistoricalExchangeRate",
 		"method", r.Method,

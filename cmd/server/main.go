@@ -2,14 +2,18 @@ package main
 
 import (
 	"exchange-rate-service/internal/api"
+	"exchange-rate-service/internal/metrics"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 
 func main() {
+	metrics.Init()
 
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
@@ -20,7 +24,7 @@ func main() {
 	mux.HandleFunc("GET /api/latest", api.GetLatestExchangeRate)
 	mux.HandleFunc("GET /api/exchange", api.GetConvertedExchangeRate)
 	mux.HandleFunc("GET /api/convert", api.GetHistoricalExchangeRate)
-
+	mux.Handle("/metrics", promhttp.Handler())
 	server :=&http.Server{
 		Addr: ":8080",
 		Handler: mux,
