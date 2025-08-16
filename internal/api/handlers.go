@@ -17,7 +17,11 @@ import (
 
 	"log/slog"
 	"net/http"
+
 )
+type AmountResponse struct {
+	Amount float64 `json:"amount"`
+}
 
 func GetHealthOfAPI(w http.ResponseWriter, r *http.Request) {
 	logger := slog.Default().With(
@@ -31,6 +35,8 @@ func GetHealthOfAPI(w http.ResponseWriter, r *http.Request) {
 
 func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 	metrics.TotalApiRequests.WithLabelValues(r.URL.Path, r.Method, "200").Inc()
+	metrics.TotalActicverequest.Set(0)
+	metrics.TotalActicverequest.Inc()
 	logger := slog.Default().With(
 		"handler", "GetEchangeRate",
 		"Method", r.Method,
@@ -87,17 +93,23 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 	// fmt.Print(data.Quotes)
 	amount := services.ConvertCurrency(From, To, data.Quotes)
 	fmt.Println("amount", amount)
+
+	response := AmountResponse{
+		Amount: amount,
+	}
 	
 	
 
 	
 	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 	
 }
 
 
 func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 	metrics.TotalApiRequests.WithLabelValues(r.URL.Path, r.Method, "200").Inc()
+	metrics.TotalActicverequest.Inc()
 	logger := slog.Default().With(
 		"handler", "GetHistoricalExchangeRate",
 		"method", r.Method,
@@ -134,21 +146,26 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	logger = logger.With("function response", body)
-	// fmt.Println("rates", string(body))
-
-	var data model.RateResponse
+	fmt.Println("rates", string(body))
+	
+	var data model.ConvertResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		logger.Error("cannot decode json", "error", err)
 	}
+	response := AmountResponse{
+		Amount: data.Result,
+	}
 	
 	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 
 }
 
 
 func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	metrics.TotalApiRequests.WithLabelValues(r.URL.Path, r.Method, "200").Inc()
+	metrics.TotalActicverequest.Inc()
 	logger := slog.Default().With(
 		"handler", "GetHistoricalExchangeRate",
 		"method", r.Method,
@@ -222,9 +239,14 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	
 	// fmt.Print(data.Quotes)
 	amount := services.ConvertCurrency(From, To, data.Quotes)
-	fmt.Println("amount", amount)
+	// fmt.Println("amount", amount)
+	response := AmountResponse{
+		Amount: amount,
+	}
 	
 	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+	
 
 }
 
