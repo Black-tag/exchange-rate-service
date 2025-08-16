@@ -1,4 +1,5 @@
-# Exchange Rate Service
+# 💰 Exchange Rate Service
+
 
 
 A backend api written in **GO** that provides exchange rate data between currencies.
@@ -40,7 +41,7 @@ go run cmd/server/main.go
 ```
 Server starts at: http://localhost:8080
 
-## Running with Docker
+## Running with Docker Compose
 Build and Start
 ```bash
 docker compose up --build
@@ -50,7 +51,7 @@ The services will be available at:
 API: `http://localhost:8080`
 
 Prometheus: `http://localhost:9090`
-Stop 
+To Stop 
 ```bash
 docker compose down
 ```
@@ -59,13 +60,14 @@ docker compose down
 
 
 ## examples with Postman
-Download the collection: [docs/exchange-rate-service.postman_collection.json](./docs/exchange-rate-service.postman_collection.json)
+Download the collection: [Download Postman Collection](./docs/exchange-rate-service.postman_collection.json)
 
 # to use :
 1. Open Postman
 2. Click "import"
 3. Select the `postman_collection.json` file
 4. Run the requests
+
 
 
 
