@@ -62,7 +62,7 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		fmt.Println("amount from cache")
 		amount := services.ConvertCurrency(from, to, cachedRates)
-		json.NewEncoder(w).Encode(map[string]float64{"rate":amount})
+		json.NewEncoder(w).Encode(map[string]float64{"amount":amount})
 		return
 	}
 	
