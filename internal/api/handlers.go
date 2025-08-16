@@ -69,6 +69,7 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 	rate, err := repository.FetchRates()
 	if err != nil {
 		logger.Error("cannot call external api")
+		http.Error(w, "failed to call external api", http.StatusInternalServerError)
 		return
 
 	}
@@ -76,7 +77,8 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(rate)
 	if err != nil {
 		logger.Error("cannot convert response body")
-		log.Fatal(err)
+		http.Error(w, "failed to read reaponse body", http.StatusInternalServerError)
+		return
 	}
 	logger = logger.With("function response", body)
 	// fmt.Println("rates", string(body))
@@ -84,8 +86,9 @@ func GetLatestExchangeRate(w http.ResponseWriter, r *http.Request) {
 	var data model.RateResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		log.Fatalf("error  parsing json")
 		logger.Error("cannot decode json", "error", err)
+		http.Error(w, "faile to decode json", http.StatusInternalServerError)
+		return
 	}
 	middleware.CacheExchangerates(cacheKey, data.Quotes)
 	
@@ -129,6 +132,7 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 	amount, err := strconv.Atoi(amountStr)
 	if err != nil {
 		logger.Error("failed to convert amount from str to int")
+		http.Error(w, "failed in conversion of currency", http.StatusInternalServerError)
 		return
 	}
 
@@ -136,6 +140,7 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 	rate , err := repository.ConvertAmount(from, to, amount)
 	if err != nil {
 		logger.Error("cannot call external api")
+		http.Error(w,"failed to call the external Pi" , http.StatusInternalServerError)
 		return
 
 	}
@@ -143,7 +148,8 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(rate)
 	if err != nil {
 		logger.Error("cannot convert response body")
-		log.Fatal(err)
+		http.Error(w, "cannot read response body", http.StatusInternalServerError)
+		return
 	}
 	logger = logger.With("function response", body)
 	fmt.Println("rates", string(body))
@@ -152,6 +158,8 @@ func GetConvertedExchangeRate (w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		logger.Error("cannot decode json", "error", err)
+		http.Error(w, "cannot decode json", http.StatusInternalServerError)
+		return
 	}
 	response := AmountResponse{
 		Amount: data.Result,
@@ -200,6 +208,8 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	givenDate, err := time.Parse("2006-01-02", date)
 	if err != nil {
 		log.Fatalf("error parsing given date: %v", err)
+		http.Error(w, "cannot parse current time", http.StatusInternalServerError)
+		return
 
 	}
 
@@ -217,6 +227,7 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	rate , err := repository.FetchHistoricalData(date)
 	if err != nil {
 		logger.Error("cannot call external api")
+		http.Error(w, "failed calling external Api", http.StatusInternalServerError)
 		return
 
 	}
@@ -224,7 +235,8 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(rate)
 	if err != nil {
 		logger.Error("cannot convert response body")
-		log.Fatal(err)
+		http.Error(w,"cannot read response body", http.StatusInternalServerError)
+		return
 	}
 	logger = logger.With("function response", body)
 	// fmt.Println("rates", string(body))
@@ -233,6 +245,8 @@ func GetHistoricalExchangeRate(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		logger.Error("cannot decode json", "error", err)
+		http.Error(w, "cannot decode json", http.StatusInternalServerError)
+		return
 	}
 	From := strings.ToUpper(from)
 	To := strings.ToUpper(to)
