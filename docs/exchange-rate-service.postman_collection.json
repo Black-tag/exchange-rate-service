@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "4cb2b519-d9cb-43df-97d7-78a9147fdebb",
+		"name": "exchange-rate-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46910462",
+		"_collection_link": "https://anandunni.postman.co/workspace/Anand-Unni's-Workspace~b36dac24-fcec-4366-8ada-39e96c6d917b/collection/46910462-4cb2b519-d9cb-43df-97d7-78a9147fdebb?action=share&source=collection_link&creator=46910462"
+	},
+	"item": [
+		{
+			"name": "latest rate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/latest?from=INR&to=USD",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"latest"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "INR"
+						},
+						{
+							"key": "to",
+							"value": "USD"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "convert currency from one to another for an amount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/convert?from=INR&to=USD&amount=100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"convert"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "INR"
+						},
+						{
+							"key": "to",
+							"value": "USD"
+						},
+						{
+							"key": "amount",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get historical exchange rates",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/convert?from=INR&to=USD&date=2025-07-02",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"convert"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "INR"
+						},
+						{
+							"key": "to",
+							"value": "USD"
+						},
+						{
+							"key": "date",
+							"value": "2025-07-02"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "metrics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/metrics",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "historical rate without dates",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
