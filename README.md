@@ -34,21 +34,22 @@ cd exchange-rate-service
 
 ### 2. Run with Go 
 go run cmd/server/main.go
-      Server starts at: http://localhost:8080
+Server starts at: http://localhost:8080
 
 ## Running with Docker 
 docker run -p 8080:8080 exchange-rate-service:latest
-      Server starts at: http://localhost:8080
+Server starts at: http://localhost:8080
 
 
 ## examples with Postman
-Download the collection: [exchange-rate-service.postman_collection.json](./postman_collection.json)
+Download the collection: [exchange-rate-service.docs.postman_collection.json](./postman_collection.json)
 
 # to use :
 1. Open Postman
 2. Click "import"
 3. Select the `postman_collection.json` file
 4. Run the requests
+
 
 
 
