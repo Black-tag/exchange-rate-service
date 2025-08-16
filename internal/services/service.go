@@ -21,13 +21,13 @@ func ConvertCurrency(From, To string, exchange map[string]float64 ) (amount floa
 	}
 	if from == "USD" { 
 		key := "USD" + to
-		fmt.Printf("key: %s, rate: %f\n", key, exchange[key])
-		return exchange["USD"+to]
+		// fmt.Printf("key: %s, rate: %f\n", key, exchange[key])
+		return exchange[key]
 	}
 	if to == "USD" {
 		key := "USD" + from
 		rate := exchange[key]
-		fmt.Printf("key: %s, rate: %f\n", key, rate)
+		// fmt.Printf("key: %s, rate: %f\n", key, rate)
 		if rate == 0 {
 			fmt.Printf("rate: %f", rate)
 			return 0
