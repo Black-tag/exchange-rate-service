@@ -27,18 +27,35 @@ Have exposed "/metrics" using Prometheus
 
 ## 🚀 Running Locally
 ### 1. Clone the repo
+```bash
 git clone https://github.com/Black-tag/exchange-rate-service.git
 cd exchange-rate-service
+```
 
 
 
 ### 2. Run with Go 
+```bash
 go run cmd/server/main.go
+```
 Server starts at: http://localhost:8080
 
-## Running with Docker 
-docker run -p 8080:8080 exchange-rate-service:latest
-Server starts at: http://localhost:8080
+## Running with Docker
+Build and Start
+```bash
+docker compose up --build
+```
+The services will be available at:
+
+API: `http://localhost:8080`
+
+Prometheus: `http://localhost:9090`
+Stop 
+```bash
+docker compose down
+```
+
+
 
 
 ## examples with Postman
@@ -49,6 +66,7 @@ Download the collection: [docs/exchange-rate-service.postman_collection.json](./
 2. Click "import"
 3. Select the `postman_collection.json` file
 4. Run the requests
+
 
 
 
