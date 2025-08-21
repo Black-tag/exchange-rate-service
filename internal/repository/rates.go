@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"exchange-rate-service/internal/config"
 	"fmt"
 	"io"
 	"log/slog"
@@ -15,7 +16,7 @@ import (
 
 func FetchRates() (io.ReadCloser, error) {
 
-	// API_KEY := "0a40d8593652f00fe31321015eb90267"
+	
 	logger := slog.Default().With(
 		"handler", "FetchRates",
 	)
@@ -23,8 +24,8 @@ func FetchRates() (io.ReadCloser, error) {
 	
 	 
 	
-	url := "https://api.exchangerate.host/live?access_key=0a40d8593652f00fe31321015eb90267"
 	
+	url := fmt.Sprintf("%s/live?access_key=%s", config.BaseURL, config.APIKey)
 	logger = logger.With("url", url)
 	logger.Info("making request to the rate excahnge api")
 
@@ -48,8 +49,8 @@ func FetchHistoricalData(date string) (io.ReadCloser, error) {
 		"function", "FetchHistoricalData",
 	)
 	logger =logger.With("date", date)
-	url := fmt.Sprintf("https://api.exchangerate.host/historical?access_key=0a40d8593652f00fe31321015eb90267&date=%s", date)
-	logger = logger.With("url", url)
+	url := fmt.Sprintf("%s/historical?access_key=%s&date=%s", config.BaseURL, config.APIKey, date)
+	logger = logger.With("url",url)
 	logger.Info("making request to the rate excahnge api")
 
 	httpClient := &http.Client{Timeout: 5* time.Second}
@@ -78,7 +79,8 @@ func ConvertAmount(from string, to string, amount int) (io.ReadCloser, error) {
 	logger =logger.With("to", symbol)
 
 	
-	url := fmt.Sprintf("https://api.exchangerate.host/convert?access_key=0a40d8593652f00fe31321015eb90267&from=%s&to=%s&amount=%d", from, to, amount)
+	url := fmt.Sprintf("%s/convert?access_key=%s&from=%s&to=%s&amount=%d",
+		config.BaseURL, config.APIKey, base, symbol, amount)
 	logger = logger.With("url", url)
 	logger.Info("making request to the rate excahnge api")
 
